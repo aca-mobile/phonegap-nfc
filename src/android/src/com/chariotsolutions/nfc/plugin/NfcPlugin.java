@@ -472,7 +472,7 @@ public class NfcPlugin extends CordovaPlugin {
                 } else if (!nfcAdapter.isNdefPushEnabled()) {
                     callbackContext.error(STATUS_NDEF_PUSH_DISABLED);
                 } else {
-                    nfcAdapter.setOnNdefPushCompleteCallback(NfcPlugin.this, getActivity());
+                    // nfcAdapter.setOnNdefPushCompleteCallback(NfcPlugin.this, getActivity());
                     try {
                         nfcAdapter.setBeamPushUris(uris, getActivity());
 
@@ -501,7 +501,7 @@ public class NfcPlugin extends CordovaPlugin {
                     callbackContext.error(STATUS_NDEF_PUSH_DISABLED);
                 } else {
                     nfcAdapter.setNdefPushMessage(p2pMessage, getActivity());
-                    nfcAdapter.setOnNdefPushCompleteCallback(NfcPlugin.this, getActivity());
+                    // nfcAdapter.setOnNdefPushCompleteCallback(NfcPlugin.this, getActivity());
 
                     PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
                     result.setKeepCallback(true);
@@ -729,20 +729,4 @@ public class NfcPlugin extends CordovaPlugin {
         "e.initEvent(''{0}'');\n" +
         "e.tag = {1};\n" +
         "document.dispatchEvent(e);";
-
-    @Override
-    public void onNdefPushComplete(NfcEvent event) {
-
-        // handover (beam) take precedence over share tag (ndef push)
-        if (handoverCallback != null) {
-            PluginResult result = new PluginResult(PluginResult.Status.OK, "Beamed Message to Peer");
-            result.setKeepCallback(true);
-            handoverCallback.sendPluginResult(result);
-        } else if (shareTagCallback != null) {
-            PluginResult result = new PluginResult(PluginResult.Status.OK, "Shared Message with Peer");
-            result.setKeepCallback(true);
-            shareTagCallback.sendPluginResult(result);
-        }
-
-    }
 }
